@@ -1,6 +1,6 @@
 {
- "version": "d114f5e75733a855",
- "generatedAt": "2026-10-31",
+ "version": "4649c3d2fa9dcfda",
+ "generatedAt": "2026-11-07",
  "source": "https://feheroes.fandom.com/wiki/List_of_Heroes",
  "bannerSource": "https://feheroes.fandom.com/wiki/List_of_Special_Heroes_by_theme",
  "originSources": [
@@ -303,6 +303,28 @@
    "bannerType": "Verano",
    "releaseDate": "2024-07-05",
    "gameVersion": "8.7",
+   "revival": false
+  },
+  {
+   "id": 4413741453879740308,
+   "page": "Alexandra: Sterling/Silver",
+   "name": "Alexandra",
+   "title": "Sterling/Silver",
+   "imageUrl": "https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/e/e2/Alexandra_SterlingSilver_Face_FC.webp/revision/latest/scale-to-width-down/75?cb=20261105101108",
+   "movement": "FLYING",
+   "weaponColor": "RED",
+   "weaponType": "SWORD",
+   "originGames": [
+    "FORTUNES_WEAVE"
+   ],
+   "gameSort": 16,
+   "unitTypes": [
+    "DUO",
+    "SPECIAL"
+   ],
+   "bannerType": "Ninjas",
+   "releaseDate": "2026-11-06",
+   "gameVersion": "10.11",
    "revival": false
   },
   {
@@ -818,6 +840,28 @@
    "bannerType": null,
    "releaseDate": "2017-02-02",
    "gameVersion": "1.0",
+   "revival": false
+  },
+  {
+   "id": 709054915980189721,
+   "page": "Anna: Covert Command",
+   "name": "Anna",
+   "title": "Covert Command",
+   "imageUrl": "https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/3/3b/Anna_Covert_Command_Face_FC.webp/revision/latest/scale-to-width-down/75?cb=20261105100818",
+   "movement": "INFANTRY",
+   "weaponColor": "COLORLESS",
+   "weaponType": "DAGGER",
+   "originGames": [
+    "HEROES"
+   ],
+   "gameSort": 0,
+   "unitTypes": [
+    "AIDED",
+    "SPECIAL"
+   ],
+   "bannerType": "Ninjas",
+   "releaseDate": "2026-11-06",
+   "gameVersion": "10.11",
    "revival": false
   },
   {
@@ -13115,6 +13159,28 @@
    "revival": true
   },
   {
+   "id": 6584433136584804768,
+   "page": "Io: Lone Ninja",
+   "name": "Io",
+   "title": "Lone Ninja",
+   "imageUrl": "https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/b/b7/Io_Lone_Ninja_Face_FC.webp/revision/latest/scale-to-width-down/75?cb=20261105101033",
+   "movement": "CAVALRY",
+   "weaponColor": "GREEN",
+   "weaponType": "AXE",
+   "originGames": [
+    "FORTUNES_WEAVE"
+   ],
+   "gameSort": 16,
+   "unitTypes": [
+    "REARMED",
+    "SPECIAL"
+   ],
+   "bannerType": "Ninjas",
+   "releaseDate": "2026-11-06",
+   "gameVersion": "10.11",
+   "revival": false
+  },
+  {
    "id": 7031661229121266794,
    "page": "Isadora: Escort of Pherae",
    "name": "Isadora",
@@ -13262,6 +13328,27 @@
    "bannerType": "Navidad",
    "releaseDate": "2025-12-15",
    "gameVersion": "10.0",
+   "revival": false
+  },
+  {
+   "id": 6059344741197246067,
+   "page": "Ivy: Icy Insight",
+   "name": "Ivy",
+   "title": "Icy Insight",
+   "imageUrl": "https://static.wikia.nocookie.net/feheroes_gamepedia_en/images/6/66/Ivy_Icy_Insight_Face_FC.webp/revision/latest/scale-to-width-down/75?cb=20261105100958",
+   "movement": "FLYING",
+   "weaponColor": "BLUE",
+   "weaponType": "TOME",
+   "originGames": [
+    "ENGAGE"
+   ],
+   "gameSort": 14,
+   "unitTypes": [
+    "SPECIAL"
+   ],
+   "bannerType": "Ninjas",
+   "releaseDate": "2026-11-06",
+   "gameVersion": "10.11",
    "revival": false
   },
   {

@@ -5,15 +5,15 @@ Aplicación Android en Kotlin para llevar un catálogo personal de héroes de
 solo registra lo que tiene: posesión, copias, si conserva alguna copia, merges,
 favoritos y notas.
 
-La versión actual es **1.0** (base de datos Room versión 7).
+La versión actual es **1.1** (base de datos Room versión 7).
 
 ## Cómo funciona
 
 - El catálogo de héroes es de solo lectura dentro de la app. No hay alta,
   edición ni eliminación libre de héroes.
 - Al abrir la app se importa `app/src/main/assets/heroes.json` en Room. El JSON
-  se genera desde la wiki y contiene **1.428 héroes** (versión de contenido
-  `d114f5e75733a855`, generada el 2026-10-31).
+  se genera desde la wiki y contiene **1.432 héroes** (versión de contenido
+  `4649c3d2fa9dcfda`, generada el 2026-11-07).
 - La importación es un *upsert*: si el catálogo cambia, se actualizan los datos
   base; la colección personal no se toca.
 - Los datos personales viven en una tabla separada y solo se crea una fila
@@ -47,9 +47,13 @@ La versión actual es **1.0** (base de datos Room versión 7).
     (cualquier tipo).
   - Juego de origen.
   - Tipo de unidad (se pueden combinar varios).
+  - Tipo de arma (se pueden combinar varios, con iconos).
   - Movimiento.
   - Color de arma.
   - `Special Rate`.
+- Orden del catálogo por alfabético, tipo de arma, juego, movimiento, color o
+  versión, en sentido ascendente o descendente. Los favoritos se mantienen
+  siempre al principio.
 - Tarjeta con retrato y casilla para marcar rápidamente si el héroe está en la
   colección. El fondo de la tarjeta se tiñe con el color de arma del héroe.
 - Los favoritos se marcan con una línea del color del tipo de favorito
@@ -130,8 +134,8 @@ La versión actual es **1.0** (base de datos Room versión 7).
 - Versiones de héroe: `Versiones.xlsx`, hoja `feh_versions_final`, columnas
   `Heroe` y `Version`. La columna `URL` se ignora. El generador empareja por
   nombre de página y tolera tildes, mayúsculas y comillas duplicadas del Excel.
-  Resultado actual: **1.428/1.428 héroes con versión**, 116 versiones distintas
-  desde `1.0` hasta `10.10`.
+  Resultado actual: **1.432/1.432 héroes con versión**, 117 versiones distintas
+  desde `1.0` hasta `10.11`.
 - La etiqueta `Special Rate` se guarda como el booleano histórico `revival`:
   los héroes no seasonal hasta `8.7` inclusive y los seasonal hasta `7.1`
   inclusive quedan en `true`. Los demás quedan en `false`.
@@ -236,10 +240,10 @@ volver a intentar. No conviene ejecutar el generador en bucle.
 APK de debug generado en `app/build/outputs/apk/debug/app-debug.apk`.
 
 También se incluye una copia compilada lista para instalar en
-`dist/FEHCatalog-1.0-debug.apk`:
+`dist/FEHCatalog-1.1-debug.apk`:
 
 ```powershell
-adb install -r dist\FEHCatalog-1.0-debug.apk
+adb install -r dist\FEHCatalog-1.1-debug.apk
 ```
 
 ## Estructura

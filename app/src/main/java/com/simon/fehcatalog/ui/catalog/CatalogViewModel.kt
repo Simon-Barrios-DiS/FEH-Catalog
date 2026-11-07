@@ -11,6 +11,7 @@ import com.simon.fehcatalog.model.FireEmblemGame
 import com.simon.fehcatalog.model.MovementType
 import com.simon.fehcatalog.model.UnitType
 import com.simon.fehcatalog.model.WeaponColor
+import com.simon.fehcatalog.model.WeaponType
 import com.simon.fehcatalog.model.searchKey
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -34,9 +35,12 @@ data class CatalogFilters(
     val collection: CollectionFilter = CollectionFilter.ALL,
     val game: FireEmblemGame? = null,
     val unitTypes: Set<UnitType> = emptySet(),
+    val weaponTypes: Set<WeaponType> = emptySet(),
     val weaponColor: WeaponColor? = null,
     val movement: MovementType? = null,
-    val specialRateOnly: Boolean = false
+    val specialRateOnly: Boolean = false,
+    val sort: CatalogSort = CatalogSort.ALPHABETICAL,
+    val sortAscending: Boolean = true
 )
 
 data class CatalogUiState(
@@ -47,11 +51,15 @@ data class CatalogUiState(
     val collectionFilter: CollectionFilter = CollectionFilter.ALL,
     val game: FireEmblemGame? = null,
     val unitTypes: Set<UnitType> = emptySet(),
+    val weaponTypes: Set<WeaponType> = emptySet(),
     val weaponColor: WeaponColor? = null,
     val movement: MovementType? = null,
     val specialRateOnly: Boolean = false,
+    val sort: CatalogSort = CatalogSort.ALPHABETICAL,
+    val sortAscending: Boolean = true,
     val availableGames: List<FireEmblemGame> = emptyList(),
     val availableUnitTypes: List<UnitType> = emptyList(),
+    val availableWeaponTypes: List<WeaponType> = emptyList(),
     val isLoading: Boolean = true,
     val errorMessage: String? = null
 ) {
@@ -60,6 +68,7 @@ data class CatalogUiState(
             collectionFilter != CollectionFilter.ALL ||
             game != null ||
             unitTypes.isNotEmpty() ||
+            weaponTypes.isNotEmpty() ||
             weaponColor != null ||
             movement != null ||
             specialRateOnly
@@ -69,6 +78,7 @@ data class CatalogUiState(
             collectionFilter != CollectionFilter.ALL,
             game != null,
             unitTypes.isNotEmpty(),
+            weaponTypes.isNotEmpty(),
             weaponColor != null,
             movement != null,
             specialRateOnly
@@ -106,6 +116,8 @@ class CatalogViewModel(
                         currentFilters.game in hero.originGames) &&
                     (currentFilters.unitTypes.isEmpty() ||
                         currentFilters.unitTypes.any { it in hero.unitTypes }) &&
+                    (currentFilters.weaponTypes.isEmpty() ||
+                        hero.weaponType in currentFilters.weaponTypes) &&
                     (currentFilters.weaponColor == null ||
                         hero.weaponColor == currentFilters.weaponColor) &&
                     (currentFilters.movement == null ||
@@ -113,9 +125,10 @@ class CatalogViewModel(
                     (!currentFilters.specialRateOnly || hero.revival)
             }
             .sortedWith(
-                compareByDescending<HeroWithCollection> { it.isFavorite }
-                    .thenBy { it.hero.name.searchKey() }
-                    .thenBy { it.hero.title.searchKey() }
+                catalogComparator(
+                    sort = currentFilters.sort,
+                    ascending = currentFilters.sortAscending
+                )
             )
 
         CatalogUiState(
@@ -126,15 +139,21 @@ class CatalogViewModel(
             collectionFilter = currentFilters.collection,
             game = currentFilters.game,
             unitTypes = currentFilters.unitTypes,
+            weaponTypes = currentFilters.weaponTypes,
             weaponColor = currentFilters.weaponColor,
             movement = currentFilters.movement,
             specialRateOnly = currentFilters.specialRateOnly,
+            sort = currentFilters.sort,
+            sortAscending = currentFilters.sortAscending,
             availableGames = FireEmblemGame.entries.filter { game ->
                 game != FireEmblemGame.UNKNOWN &&
                     allHeroes.any { game in it.hero.originGames }
             },
             availableUnitTypes = UnitType.entries.filter { type ->
                 allHeroes.any { type in it.hero.unitTypes }
+            },
+            availableWeaponTypes = WeaponType.displayOrder.filter { type ->
+                allHeroes.any { it.hero.weaponType == type }
             },
             isLoading = preparing || (allHeroes.isEmpty() && error == null),
             errorMessage = error
@@ -195,6 +214,18 @@ class CatalogViewModel(
         }
     }
 
+    fun toggleWeaponType(value: WeaponType) {
+        filters.update { current ->
+            current.copy(
+                weaponTypes = if (value in current.weaponTypes) {
+                    current.weaponTypes - value
+                } else {
+                    current.weaponTypes + value
+                }
+            )
+        }
+    }
+
     fun onWeaponColorSelected(value: WeaponColor?) {
         filters.update { it.copy(weaponColor = value) }
     }
@@ -207,8 +238,27 @@ class CatalogViewModel(
         filters.update { it.copy(specialRateOnly = !it.specialRateOnly) }
     }
 
+    fun onSortSelected(value: CatalogSort) {
+        filters.update { it.copy(sort = value) }
+    }
+
+    fun toggleSortDirection() {
+        filters.update { it.copy(sortAscending = !it.sortAscending) }
+    }
+
     fun clearFilters() {
-        filters.value = CatalogFilters()
+        filters.update {
+            it.copy(
+                query = "",
+                collection = CollectionFilter.ALL,
+                game = null,
+                unitTypes = emptySet(),
+                weaponTypes = emptySet(),
+                weaponColor = null,
+                movement = null,
+                specialRateOnly = false
+            )
+        }
     }
 
     fun onOwnedChange(heroId: Long, owned: Boolean) {

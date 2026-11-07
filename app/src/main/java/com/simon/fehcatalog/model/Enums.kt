@@ -32,7 +32,27 @@ enum class WeaponType(val label: String) {
     TOME("Tomo"),
     STAFF("Bastón"),
     BREATH("Aliento"),
-    BEAST("Garra")
+    BEAST("Garra");
+
+    companion object {
+        /**
+         * Orden de presentación acordado para el catálogo: primero las armas
+         * cuerpo a cuerpo (espada, lanza, hacha y bastón) y luego las demás.
+         */
+        val displayOrder: List<WeaponType> = listOf(
+            SWORD,
+            LANCE,
+            AXE,
+            STAFF,
+            BOW,
+            DAGGER,
+            TOME,
+            BREATH,
+            BEAST
+        )
+
+        fun sortIndex(type: WeaponType): Int = displayOrder.indexOf(type)
+    }
 }
 
 /**

@@ -22,12 +22,16 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
@@ -44,6 +48,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -55,11 +60,13 @@ import com.simon.fehcatalog.model.FireEmblemGame
 import com.simon.fehcatalog.model.MovementType
 import com.simon.fehcatalog.model.UnitType
 import com.simon.fehcatalog.model.WeaponColor
+import com.simon.fehcatalog.model.WeaponType
 import com.simon.fehcatalog.ui.components.GameIcon
 import com.simon.fehcatalog.ui.components.MovementIcon
 import com.simon.fehcatalog.ui.components.SpecialRateIcon
 import com.simon.fehcatalog.ui.components.UnitTypeIcon
 import com.simon.fehcatalog.ui.components.WeaponColorIcon
+import com.simon.fehcatalog.ui.components.WeaponTypeIcon
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -136,6 +143,13 @@ fun CatalogScreen(
                 onSelected = viewModel::onCollectionFilterChange
             )
 
+            SortRow(
+                sort = state.sort,
+                ascending = state.sortAscending,
+                onSortSelected = viewModel::onSortSelected,
+                onToggleDirection = viewModel::toggleSortDirection
+            )
+
             if (state.hasActiveFilters) {
                 Row(
                     modifier = Modifier
@@ -207,6 +221,7 @@ fun CatalogScreen(
             onCollectionFilterChange = viewModel::onCollectionFilterChange,
             onGameSelected = viewModel::onGameSelected,
             onUnitTypeToggle = viewModel::toggleUnitType,
+            onWeaponTypeToggle = viewModel::toggleWeaponType,
             onColorSelected = viewModel::onWeaponColorSelected,
             onMovementSelected = viewModel::onMovementSelected,
             onSpecialRateToggle = viewModel::toggleSpecialRate,
@@ -249,6 +264,65 @@ private fun CollectionFilterRow(
     }
 }
 
+@Composable
+private fun SortRow(
+    sort: CatalogSort,
+    ascending: Boolean,
+    onSortSelected: (CatalogSort) -> Unit,
+    onToggleDirection: () -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "Ordenar",
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(Modifier.width(4.dp))
+        Box {
+            TextButton(onClick = { expanded = true }) {
+                Text(sort.label)
+                Icon(
+                    imageVector = Icons.Default.ArrowDropDown,
+                    contentDescription = null
+                )
+            }
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                CatalogSort.entries.forEach { option ->
+                    DropdownMenuItem(
+                        text = { Text(option.label) },
+                        onClick = {
+                            onSortSelected(option)
+                            expanded = false
+                        },
+                        trailingIcon = {
+                            if (option == sort) {
+                                Icon(
+                                    imageVector = Icons.Default.Check,
+                                    contentDescription = null
+                                )
+                            }
+                        }
+                    )
+                }
+            }
+        }
+        Spacer(Modifier.weight(1f))
+        TextButton(onClick = onToggleDirection) {
+            Text(if (ascending) "↑ Menor a mayor" else "↓ Mayor a menor")
+        }
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 private fun FilterSheet(
@@ -256,6 +330,7 @@ private fun FilterSheet(
     onCollectionFilterChange: (CollectionFilter) -> Unit,
     onGameSelected: (FireEmblemGame?) -> Unit,
     onUnitTypeToggle: (UnitType) -> Unit,
+    onWeaponTypeToggle: (WeaponType) -> Unit,
     onColorSelected: (WeaponColor?) -> Unit,
     onMovementSelected: (MovementType?) -> Unit,
     onSpecialRateToggle: () -> Unit,
@@ -340,6 +415,16 @@ private fun FilterSheet(
                         )
                     }
                 )
+            }
+
+            FilterSection("Tipo de arma") {
+                state.availableWeaponTypes.forEach { type ->
+                    FilterChip(
+                        selected = type in state.weaponTypes,
+                        onClick = { onWeaponTypeToggle(type) },
+                        label = { WeaponTypeIcon(type = type, size = 28.dp) }
+                    )
+                }
             }
 
             FilterSection("Movimiento") {
