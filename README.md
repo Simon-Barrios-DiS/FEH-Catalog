@@ -374,6 +374,35 @@ conversores de Room.
   Windows. Lo ideal es mantenerlo en una ruta local como
   `C:\Users\<usuario>\proyectos`.
 
+## Instalación en el teléfono
+
+La APK publicada está firmada con el keystore de depuración de este PC
+(`~/.android/debug.keystore`). Para actualizar sobre una instalación existente,
+la nueva APK debe estar firmada con la misma clave y tener un `versionCode`
+igual o mayor; de lo contrario Android rechaza la actualización por conflicto
+de firma. Una actualización conserva la base de datos y la colección: no hay
+que desinstalar.
+
+En el Samsung SM-A315G (Android 12) la instalación desde My Files se quedaba en
+`Installing…` porque el verificador de Play Protect
+(`com.google.android.verifier`) era terminado por `lmkd` al no haber memoria
+suficiente. Con la verificación de paquetes desactivada la instalación terminó
+en unos 10 segundos:
+
+```powershell
+# Desactivar temporalmente la verificación (equivale a Play Protect →
+# Analizar apps con Play Protect → desactivado)
+adb shell settings put global package_verifier_enable 0
+
+# Restaurar la verificación
+adb shell settings put global package_verifier_enable 1
+```
+
+Si se prefiere mantener Play Protect activo, antes de instalar conviene cerrar
+apps en segundo plano para liberar RAM y repetir la instalación; como
+alternativa, `adb install -r <apk>` (o `pm install -r`) no pasa por el
+verificador y funciona aunque la verificación esté activa.
+
 ## Próximos pasos sugeridos
 
 1. Agregar un filtro por origen/banner.
